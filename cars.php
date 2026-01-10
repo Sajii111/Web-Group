@@ -143,7 +143,7 @@
             while($row = $result->fetch_assoc()): ?>
                 <div class="card">
                     <div class="card-image-wrapper">
-                        <img src="<?php echo $row['image_url']; ?>" alt="Car">
+                        <img src="uploads/vehicles/<?php echo $row['image']; ?>" alt="Car">
                     </div>
                     <div class="card-content">
                         <span class="status-badge"><?php echo $row['status']; ?></span>

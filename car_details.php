@@ -107,7 +107,7 @@ if(isset($_POST['send_inquiry'])) {
 <div class="container">
     <div class="details-layout">
         <div class="image-showcase">
-            <img src="<?php echo $car['image_url']; ?>" alt="Vehicle Image">
+            <img src="uploads/vehicles/<?php echo $car['image']; ?>" alt="Vehicle Image">
             <div class="description-box">
                 <h3>Vehicle Description</h3>
                 <p style="color: var(--gray); line-height: 1.8;"><?php echo nl2br($car['description']); ?></p>
