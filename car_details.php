@@ -124,7 +124,7 @@ if(isset($_POST['send_inquiry'])) {
                 <li><span>Transmission</span> <span><?php echo $car['transmission']; ?></span></li>
                 <li><span>Body Style</span> <span><?php echo $car['body_type']; ?></span></li>
                 <li><span>Fuel Type</span> <span><?php echo $car['fuel_type']; ?></span></li>
-                <li><span>Mileage</span> <span><?php echo number_format($car['mileage']); ?> KM</span></li>
+                <li><span>millage</span> <span><?php echo number_format($car['millage']); ?> KM</span></li>
                 <li><span>Status</span> <span><?php echo $car['status']; ?></span></li>
             </ul>
             

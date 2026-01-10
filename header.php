@@ -66,7 +66,9 @@
         <li><a href="contact.php">Concierge</a></li>
         <?php if(isset($_SESSION['user_id'])): ?>
             <?php if($_SESSION['role'] == 'admin'): ?>
-                <li><a href="admin_dashboard.php" style="color: var(--gold);">Management</a></li>
+            <li><a href="admin_dashboard.php" style="color: var(--gold);">Admin</a></li>
+            <?php elseif($_SESSION['role'] == 'user'): ?>
+            <li><a href="user_inquires.php">My Inquiries</a></li>
             <?php endif; ?>
             <li><a href="logout.php">Logout</a></li>
         <?php else: ?>

@@ -19,6 +19,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $brand = $conn->real_escape_string($_POST['brand']);
         $model = $conn->real_escape_string($_POST['model']);
         $year = intval($_POST['year']);
+        $millage = intval($_POST['millage']);
         $price = floatval($_POST['price']);
         $status = $conn->real_escape_string($_POST['status']);
         $description = $conn->real_escape_string($_POST['description']);
@@ -37,9 +38,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 }
             }
         }
-        
-        $sql = "INSERT INTO cars (brand, model, year, price, status, description, image) 
-                VALUES ('$brand', '$model', $year, $price, '$status', '$description', '$image')";
+
+        $sql = "INSERT INTO cars (brand, model, year, millage, price, status, description, image) 
+                VALUES ('$brand', '$model', $year, $millage, $price, '$status', '$description', '$image')";
         
         if($conn->query($sql)) {
             echo json_encode(['success' => true, 'message' => 'Vehicle added successfully']);
@@ -54,6 +55,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $brand = $conn->real_escape_string($_POST['brand']);
         $model = $conn->real_escape_string($_POST['model']);
         $year = intval($_POST['year']);
+        $millage = intval($_POST['millage']);
         $price = floatval($_POST['price']);
         $status = $conn->real_escape_string($_POST['status']);
         $description = $conn->real_escape_string($_POST['description']);
@@ -79,8 +81,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 }
             }
         }
-        
-        $sql = "UPDATE cars SET brand='$brand', model='$model', year=$year, price=$price, 
+
+        $sql = "UPDATE cars SET brand='$brand', model='$model', year=$year, millage=$millage, price=$price, 
                 status='$status', description='$description', image='$image' WHERE id=$id";
         
         if($conn->query($sql)) {
@@ -619,6 +621,7 @@ $conn->query("ALTER TABLE cars ADD COLUMN IF NOT EXISTS image VARCHAR(255)");
                             <th>Brand</th>
                             <th>Model</th>
                             <th>Year</th>
+                            <th>Millage (KM)</th>
                             <th>Price</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -643,7 +646,8 @@ $conn->query("ALTER TABLE cars ADD COLUMN IF NOT EXISTS image VARCHAR(255)");
                             <td><strong><?php echo htmlspecialchars($row['brand']); ?></strong></td>
                             <td><?php echo htmlspecialchars($row['model']); ?></td>
                             <td><?php echo $row['year']; ?></td>
-                            <td>$<?php echo number_format($row['price']); ?></td>
+                            <td><?php echo $row['millage']; ?></td>
+                            <td>Rs. <?php echo $row['price']; ?></td>
                             <td>
                                 <span class="badge <?php 
                                     echo $row['status'] == 'Available' ? 'badge-success' : 
@@ -717,6 +721,11 @@ $conn->query("ALTER TABLE cars ADD COLUMN IF NOT EXISTS image VARCHAR(255)");
                             <option value="Sold">Sold</option>
                             <option value="Reserved">Reserved</option>
                         </select>
+                    </div>
+
+                     <div class="form-group">
+                        <label>Millage (KM)</label>
+                        <input type="number" class="form-control" id="millage" name="millage" min="0" value="0">
                     </div>
                     
                     <div class="form-group">
@@ -793,6 +802,7 @@ $conn->query("ALTER TABLE cars ADD COLUMN IF NOT EXISTS image VARCHAR(255)");
                     document.getElementById('brand').value = data.brand;
                     document.getElementById('model').value = data.model;
                     document.getElementById('year').value = data.year;
+                    document.getElementById('millage').value = data.millage;
                     document.getElementById('price').value = data.price;
                     document.getElementById('status').value = data.status;
                     document.getElementById('description').value = data.description || '';

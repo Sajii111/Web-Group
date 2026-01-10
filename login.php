@@ -1,4 +1,5 @@
-<?php include 'db.php'; include 'header.php'; 
+<?php include 'db.php';
+ include 'header.php'; 
 
 if(isset($_POST['login'])) {
     $email = $conn->real_escape_string($_POST['email']);

@@ -1,10 +1,129 @@
 <?php session_start(); 
 include 'db.php'; 
+require_once 'email_service.php';
+
 
 if(!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
     header("Location: login.php");
     exit();
 }
+
+
+// Handle email sending
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['inquiry_id'])) {
+
+    $inquiry_id = intval($_POST['inquiry_id']);
+
+    // Get inquiry details
+    $sql = "SELECT inquiries.*, users.name, users.email, cars.brand, cars.model 
+            FROM inquiries 
+            JOIN users ON inquiries.user_id = users.id 
+            JOIN cars ON inquiries.car_id = cars.id 
+            WHERE inquiries.id = $inquiry_id";
+
+    $result = $conn->query($sql);
+    $inquiry = $result ? $result->fetch_assoc() : null;
+
+    if ($inquiry) {
+        try {
+
+            $email   = $inquiry['email'];
+            $name    = $inquiry['name'];
+            $subject = 'Vehicle Availability Update';
+
+            $body = '
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                    .header { background: #1a1a1a; color: #d4af37; padding: 30px; text-align: center; }
+                    .header h1 { margin: 0; font-size: 28px; }
+                    .content { background: #f9f9f9; padding: 30px; }
+                    .vehicle-info { background: white; padding: 20px; margin: 20px 0; border-left: 4px solid #d4af37; }
+                    .vehicle-info h2 { color: #d4af37; margin-top: 0; }
+                    .message { background: white; padding: 20px; margin: 20px 0; }
+                    .footer { background: #1a1a1a; color: #888; padding: 20px; text-align: center; font-size: 14px; }
+                    .btn { display: inline-block; padding: 12px 30px; background: #d4af37; color: #000; text-decoration: none; margin: 20px 0; font-weight: bold; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>🚗 Luxury Cars</h1>
+                        <p>Premium Vehicle Collection</p>
+                    </div>
+                    
+                    <div class="content">
+                        <p>Dear ' . htmlspecialchars($inquiry['name']) . ',</p>
+                        
+                        <p>Thank you for your interest in our premium vehicle collection. We are pleased to inform you about the availability of the vehicle you inquired about.</p>
+                        
+                        <div class="vehicle-info">
+                            <h2>' . htmlspecialchars($inquiry['brand'] . ' ' . $inquiry['model']) . '</h2>
+                            <p><strong>Status:</strong> Available for viewing and test drive</p>
+                            <p><strong>Your Inquiry:</strong> "' . htmlspecialchars($inquiry['message']) . '"</p>
+                        </div>
+                        
+                        <div class="message">
+                            <h3>Next Steps:</h3>
+                            <ul>
+                                <li>Schedule a private viewing at your convenience</li>
+                                <li>Arrange a test drive experience</li>
+                                <li>Discuss financing and customization options</li>
+                                <li>Get detailed vehicle specifications and history</li>
+                            </ul>
+                        </div>
+                        
+                        <p>Our concierge team is ready to assist you with any questions or to schedule your exclusive viewing.</p>
+                        
+                        <center>
+                            <a href="tel:+1234567890" class="btn">Call Us: +12 3456 7890</a>
+                        </center>
+                        
+                        <p style="margin-top: 30px;">We look forward to helping you find your perfect vehicle.</p>
+                        
+                        <p>Best regards,<br>
+                        <strong>Luxury Cars Team</strong><br>
+                        Concierge Services</p>
+                    </div>
+                    
+                    <div class="footer">
+                        <p>123 Peradeniya Road, Kandy, Sri Lanka</p>
+                        <p>Phone: +12 3456 7890 | Email: concierge@eliteautos.com</p>
+                        <p>&copy; ' . date('Y') . ' Luxury Cars. All rights reserved.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            ';
+
+            // ✅ CALL function (NO return)
+            $sent = sendEmail($email, $name, $subject, $body);
+
+            if ($sent) {
+                 // Update inquiry status to "Responded"
+            $conn->query("UPDATE inquiries SET status='Responded' WHERE id=$inquiry_id");
+            
+                $_SESSION['email_success'] = "Availability email sent successfully to $email";
+            } else {
+                $_SESSION['email_error'] = "Email sending failed.";
+            }
+
+        } catch (Exception $e) {
+            $_SESSION['email_error'] = "Email error: " . $e->getMessage();
+        }
+
+    } else {
+        $_SESSION['email_error'] = 'Inquiry not found.';
+    }
+
+    // ✅ Redirect always
+    header("Location: admin_inquiries.php");
+    exit();
+}
+
 
 // Handle AJAX requests
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
@@ -26,7 +145,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $id = intval($_POST['id']);
         $status = $conn->real_escape_string($_POST['status']);
         
-        // Add status column if it doesn't exist
         $conn->query("ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'Pending'");
         
         $sql = "UPDATE inquiries SET status='$status' WHERE id=$id";
@@ -110,6 +228,8 @@ $conn->query("ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS status VARCHAR(20) 
         .btn-primary:hover { background: var(--primary-dark); }
         .btn-danger { background: var(--danger); color: white; }
         .btn-info { background: var(--info); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #059669; }
         .logout-btn { background: var(--danger); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 14px; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
@@ -138,14 +258,34 @@ $conn->query("ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS status VARCHAR(20) 
         .badge-responded { background: #d1fae5; color: var(--success); }
         .badge-closed { background: #f3f4f6; color: var(--text-secondary); }
 
-        .action-btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; margin-right: 4px; transition: all 0.3s; }
+        .action-btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; margin-right: 4px; transition: all 0.3s; margin-bottom: 4px; }
         .action-btn i { margin-right: 4px; }
+        .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; display: none; }
         .alert-success { background: #d1fae5; color: var(--success); border: 1px solid var(--success); }
         .alert-danger { background: #fee2e2; color: var(--danger); border: 1px solid var(--danger); }
 
         .status-select { padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; cursor: pointer; }
+
+        .spinner { 
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-sending {
+            pointer-events: none;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -186,6 +326,18 @@ $conn->query("ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS status VARCHAR(20) 
 
         <div class="content-area">
             <div class="card">
+                <?php if(isset($_SESSION['email_success'])): ?>
+                <div class="alert alert-success" style="display: block;">
+                    <i class="fas fa-check-circle"></i> <?php echo $_SESSION['email_success']; unset($_SESSION['email_success']); ?>
+                </div>
+                <?php endif; ?>
+
+                <?php if(isset($_SESSION['email_error'])): ?>
+                <div class="alert alert-danger" style="display: block;">
+                    <i class="fas fa-exclamation-circle"></i> <?php echo $_SESSION['email_error']; unset($_SESSION['email_error']); ?>
+                </div>
+                <?php endif; ?>
+
                 <div class="alert alert-success" id="successAlert"></div>
                 <div class="alert alert-danger" id="errorAlert"></div>
                 
@@ -236,6 +388,13 @@ $conn->query("ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS status VARCHAR(20) 
                                 </select>
                             </td>
                             <td>
+                                <form method="POST" style="display: inline-block;" onsubmit="handleEmailSubmit(event, this)">
+                                    <input type="hidden" name="inquiry_id" value="<?php echo $row['id']; ?>">
+
+                                    <button type="submit" name="send_email" class="action-btn btn-success email-btn">
+                                        <i class="fas fa-paper-plane"></i> Send Availability
+                                    </button>
+                                </form>
                                 <button class="action-btn btn-info" onclick="viewInquiry(<?php echo $row['id']; ?>)">
                                     <i class="fas fa-eye"></i> View
                                 </button>
@@ -271,7 +430,27 @@ $conn->query("ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS status VARCHAR(20) 
                 pageLength: 10, 
                 order: [[0, 'desc']] 
             });
+
+            // Auto-hide alerts after 5 seconds
+            setTimeout(() => {
+                $('.alert').fadeOut();
+            }, 5000);
         });
+
+        function handleEmailSubmit(event, form) {
+            event.preventDefault();
+            
+            const button = form.querySelector('.email-btn');
+            const originalContent = button.innerHTML;
+            
+            // Disable button and show loading
+            button.disabled = true;
+            button.classList.add('btn-sending');
+            button.innerHTML = '<span class="spinner"></span> Sending...';
+            
+            // Submit the form
+            form.submit();
+        }
 
         function closeModal() {
             document.getElementById('inquiryModal').classList.remove('active');

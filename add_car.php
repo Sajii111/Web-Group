@@ -3,21 +3,21 @@
 if(!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') header("Location: login.php");
 
 $is_edit = false;
-$brand = $model = $price = $year = $mileage = $desc = $img = $status = "";
+$brand = $model = $price = $year = $millage = $desc = $img = $status = "";
 
 if(isset($_GET['edit'])) {
     $is_edit = true;
     $id = $_GET['edit'];
     $data = $conn->query("SELECT * FROM cars WHERE id=$id")->fetch_assoc();
     $brand = $data['brand']; $model = $data['model']; $price = $data['price'];
-    $year = $data['year']; $mileage = $data['mileage']; $status = $data['status'];
+    $year = $data['year']; $millage = $data['millage']; $status = $data['status'];
     $desc = $data['description']; $img = $data['image_url'];
 }
 
 if(isset($_POST['submit'])) {
     $brand = $_POST['brand']; $model = $_POST['model']; $price = $_POST['price'];
     $year = $_POST['year']; $cond = $_POST['condition']; $trans = $_POST['transmission'];
-    $body = $_POST['body_type']; $fuel = $_POST['fuel_type']; $mileage = $_POST['mileage'];
+    $body = $_POST['body_type']; $fuel = $_POST['fuel_type']; $millage = $_POST['millage'];
     $status = $_POST['status']; $desc = $conn->real_escape_string($_POST['description']);
     $img = $_POST['image_url']; $feat = isset($_POST['is_featured']) ? 1 : 0;
 
@@ -25,12 +25,12 @@ if(isset($_POST['submit'])) {
         $id = $_GET['edit'];
         $sql = "UPDATE cars SET brand='$brand', model='$model', price='$price', status='$status', 
                 year='$year', vehicle_condition='$cond', transmission='$trans', 
-                body_type='$body', fuel_type='$fuel', mileage='$mileage', 
+                body_type='$body', fuel_type='$fuel', millage='$millage', 
                 description='$desc', image_url='$img', is_featured='$feat' 
                 WHERE id=$id";
     } else {
-        $sql = "INSERT INTO cars (brand, model, price, status, year, vehicle_condition, transmission, body_type, fuel_type, mileage, description, image_url, is_featured) 
-                VALUES ('$brand', '$model', '$price', '$status', '$year', '$cond', '$trans', '$body', '$fuel', '$mileage', '$desc', '$img', '$feat')";
+        $sql = "INSERT INTO cars (brand, model, price, status, year, vehicle_condition, transmission, body_type, fuel_type, millage, description, image_url, is_featured) 
+                VALUES ('$brand', '$model', '$price', '$status', '$year', '$cond', '$trans', '$body', '$fuel', '$millage', '$desc', '$img', '$feat')";
     }
     if($conn->query($sql)) header("Location: admin_dashboard.php");
 }
@@ -147,8 +147,8 @@ if(isset($_POST['submit'])) {
         </div>
 
         <div>
-            <label>Mileage (KM)</label>
-            <input type="number" name="mileage" value="<?php echo $mileage; ?>" required>
+            <label>millage (KM)</label>
+            <input type="number" name="millage" value="<?php echo $millage; ?>" required>
         </div>
         <div>
             <label>Availability</label>
