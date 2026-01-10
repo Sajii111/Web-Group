@@ -116,7 +116,7 @@ if(isset($_POST['send_inquiry'])) {
 
         <div class="info-pane">
             <h1 class="car-title"><?php echo $car['brand'] . " " . $car['model']; ?></h1>
-            <span class="car-price-large">$<?php echo number_format($car['price']); ?></span>
+            <span class="car-price-large">Rs . <?php echo number_format($car['price']); ?></span>
             
             <ul class="spec-list">
                 <li><span>Year</span> <span><?php echo $car['year']; ?></span></li>
