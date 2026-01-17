@@ -235,7 +235,7 @@
                 echo "
                 <div class='card'>
                     <div class='card-image-wrapper'>
-                        <img src='{$row['image_url']}' alt='{$row['brand']} {$row['model']}'>
+                          <img src='uploads/vehicles/{$row['image']}' alt='{$row['brand']} {$row['model']}'>
                     </div>
                     <div class='card-content'>
                         <h3>{$row['brand']} {$row['model']}</h3>
