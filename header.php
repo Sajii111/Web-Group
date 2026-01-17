@@ -24,6 +24,7 @@
             padding: 20px 50px;
             background: #111;
             border-bottom: 1px solid #222;
+            position: relative;
         }
         .logo {
             color: var(--gold);
@@ -32,6 +33,7 @@
             letter-spacing: 2px;
             text-decoration: none;
         }
+        
         nav ul {
             display: flex;
             list-style: none;
@@ -53,22 +55,72 @@
             color: var(--gold);
         }
 
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: var(--gold);
+            transition: 0.3s;
+        }
+
+        @media screen and (max-width: 768px) {
+            nav {
+                padding: 20px;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            nav ul {
+                display: none; 
+                flex-direction: column;
+                width: 100%;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background-color: #111;
+                border-bottom: 1px solid var(--gold);
+                padding: 20px 0;
+                text-align: center;
+                z-index: 1000;
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            nav ul li {
+                margin: 15px 0;
+            }
+        }
     </style>
 </head>
 <body>
 
 <nav>
     <a href="index.php" class="logo">ELITE AUTOS</a>
-    <ul>
+    
+    <div class="hamburger" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <ul id="nav-links">
         <li><a href="index.php">Home</a></li>
         <li><a href="cars.php">Inventory</a></li>
         <li><a href="about.php">Our Legacy</a></li>
         <li><a href="contact.php">Concierge</a></li>
         <?php if(isset($_SESSION['user_id'])): ?>
             <?php if($_SESSION['role'] == 'admin'): ?>
-            <li><a href="admin_dashboard.php" style="color: var(--gold);">Admin</a></li>
-            <?php elseif($_SESSION['role'] == 'user'): ?>
-            <li><a href="user_inquires.php">My Inquiries</a></li>
+                <li><a href="admin_dashboard.php" style="color: var(--gold);">Management</a></li>
             <?php endif; ?>
             <li><a href="logout.php">Logout</a></li>
         <?php else: ?>
@@ -77,3 +129,10 @@
         <?php endif; ?>
     </ul>
 </nav>
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('nav-links');
+        menu.classList.toggle('active');
+    }
+</script>

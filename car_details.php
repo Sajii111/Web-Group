@@ -102,6 +102,42 @@ if(isset($_POST['send_inquiry'])) {
     .btn:hover { background: var(--gold); color: #000; }
     
     .success-notif { color: var(--gold); border: 1px solid var(--gold); padding: 10px; margin-bottom: 20px; text-align: center; font-size: 0.85rem; }
+
+@media screen and (max-width: 900px) {
+    
+    .details-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .image-showcase {
+        order: 1;
+    }
+
+    .info-pane {
+        order: 2;
+        padding: 1.5rem;
+    }
+    
+    .description-box {
+        order: 3; 
+        margin-top: 0;
+        padding: 1.5rem;
+    }
+
+    .car-title {
+        font-size: 1.8rem;
+    }
+
+    .car-price-large {
+        font-size: 1.5rem;
+    }
+
+    .spec-list li {
+        font-size: 0.85rem;
+    }
+}
 </style>
 
 <div class="container">

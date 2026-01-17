@@ -181,6 +181,38 @@
         color: var(--gray);
         font-size: 0.95rem;
     }
+
+@media screen and (max-width: 768px) {
+    h1 { font-size: 2.2rem; }
+    
+    .hero p { 
+        font-size: 0.9rem; 
+        letter-spacing: 1px; 
+    }
+
+    .hero {
+        height: 70vh;
+        background-attachment: scroll;
+    }
+
+    .container {
+        padding: 3rem 15px;
+    }
+
+    .grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .feature-item {
+        padding: 1.5rem;
+    }
+}
 </style>
 
 <div class="hero">

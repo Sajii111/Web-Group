@@ -116,6 +116,35 @@
         margin-bottom: 0.5rem;
         display: block;
     }
+
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 2rem 15px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .filter-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 2rem;
+    }
+
+    .btn {
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+    }
+
+    .grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+}
 </style>
 
 <div class="container">
