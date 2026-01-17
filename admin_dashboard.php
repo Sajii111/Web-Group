@@ -292,15 +292,28 @@ $total_brands = $conn->query("SELECT COUNT(DISTINCT brand) as count FROM cars")-
             color: var(--text-secondary);
             margin-top: 4px;
         }
+
+        .logo-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .logo-link:hover h2 {
+            color: var(--primary);
+            transition: color 0.3s;
+        }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
-        <div class="sidebar-header">
+    <div class="sidebar-header">
+        <a href="index.php" class="logo-link">
             <h2>Elite Auto</h2>
-            <p>Admin Dashboard</p>
-        </div>
+        </a>
+        <p>Admin Dashboard</p>
+    </div>
         <nav class="sidebar-menu">
             <a href="admin_dashboard.php" class="menu-item active">
                 <i class="fas fa-home"></i>

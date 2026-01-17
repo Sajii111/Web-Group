@@ -556,15 +556,28 @@ $conn->query("ALTER TABLE cars ADD COLUMN IF NOT EXISTS image VARCHAR(255)");
             color: var(--danger);
             border: 1px solid var(--danger);
         }
+
+        .logo-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .logo-link:hover h2 {
+            color: var(--primary);
+            transition: color 0.3s;
+        }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>Luxury Cars</h2>
-            <p>Admin Dashboard</p>
-        </div>
+    <div class="sidebar-header">
+        <a href="index.php" class="logo-link">
+            <h2>Elite Auto</h2>
+        </a>
+        <p>Admin Dashboard</p>
+    </div>
         <nav class="sidebar-menu">
             <a href="admin_dashboard.php" class="menu-item">
                 <i class="fas fa-home"></i>

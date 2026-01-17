@@ -274,14 +274,27 @@ $conn->query("ALTER TABLE users ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFA
             margin-top: 4px;
             font-style: italic;
         }
+
+        .logo-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .logo-link:hover h2 {
+            color: var(--primary);
+            transition: color 0.3s;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>Luxury Cars</h2>
-            <p>Admin Dashboard</p>
-        </div>
+    <div class="sidebar-header">
+        <a href="index.php" class="logo-link">
+            <h2>Elite Auto</h2>
+        </a>
+        <p>Admin Dashboard</p>
+    </div>
         <nav class="sidebar-menu">
             <a href="admin_dashboard.php" class="menu-item">
                 <i class="fas fa-home"></i> Dashboard
