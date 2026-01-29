@@ -4,6 +4,7 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') header("Location: 
 
 $is_edit = false;
 $brand = $model = $price = $year = $millage = $desc = $img = $status = "";
+$cond = "New"; $trans = "Automatic"; $body = "Sedan"; $fuel = "Petrol";
 
 if(isset($_GET['edit'])) {
     $is_edit = true;
@@ -12,6 +13,8 @@ if(isset($_GET['edit'])) {
     $brand = $data['brand']; $model = $data['model']; $price = $data['price'];
     $year = $data['year']; $millage = $data['millage']; $status = $data['status'];
     $desc = $data['description']; $img = $data['image_url'];
+    $cond = $data['vehicle_condition']; $trans = $data['transmission'];
+    $body = $data['body_type']; $fuel = $data['fuel_type'];
 }
 
 if(isset($_POST['submit'])) {
@@ -117,32 +120,33 @@ if(isset($_POST['submit'])) {
         <div>
             <label>Condition</label>
             <select name="condition">
-                <option value="New">New</option>
-                <option value="Used">Used</option>
+                <option value="New" <?php if($cond == 'New') echo 'selected'; ?>>New</option>
+                <option value="Used" <?php if($cond == 'Used') echo 'selected'; ?>>Used</option>
             </select>
         </div>
         <div>
             <label>Transmission</label>
             <select name="transmission">
-                <option value="Automatic">Automatic</option>
-                <option value="Manual">Manual</option>
+                <option value="Automatic" <?php if($trans == 'Automatic') echo 'selected'; ?>>Automatic</option>
+                <option value="Manual" <?php if($trans == 'Manual') echo 'selected'; ?>>Manual</option>
             </select>
         </div>
         <div>
             <label>Body Style</label>
             <select name="body_type">
-                <option value="Sedan">Sedan</option>
-                <option value="SUV">SUV</option>
-                <option value="Sports">Sports</option>
+                <option value="Sedan" <?php if($body == 'Sedan') echo 'selected'; ?>>Sedan</option>
+                <option value="SUV" <?php if($body == 'SUV') echo 'selected'; ?>>SUV</option>
+                <option value="Sports" <?php if($body == 'Sports') echo 'selected'; ?>>Sports</option>
+                <option value="Others" <?php if($body == 'Others') echo 'selected'; ?>>Others</option>
             </select>
         </div>
         <div>
             <label>Fuel Type</label>
             <select name="fuel_type">
-                <option value="Petrol">Petrol</option>
-                <option value="Diesel">Diesel</option>
-                <option value="Electric">Electric</option>
-                <option value="Hybrid">Hybrid</option>
+                <option value="Petrol" <?php if($fuel == 'Petrol') echo 'selected'; ?>>Petrol</option>
+                <option value="Diesel" <?php if($fuel == 'Diesel') echo 'selected'; ?>>Diesel</option>
+                <option value="Electric" <?php if($fuel == 'Electric') echo 'selected'; ?>>Electric</option>
+                <option value="Hybrid" <?php if($fuel == 'Hybrid') echo 'selected'; ?>>Hybrid</option>
             </select>
         </div>
 

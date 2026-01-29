@@ -23,6 +23,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $price = floatval($_POST['price']);
         $status = $conn->real_escape_string($_POST['status']);
         $description = $conn->real_escape_string($_POST['description']);
+        $vehicle_condition = $conn->real_escape_string($_POST['vehicle_condition']);
+        $transmission = $conn->real_escape_string($_POST['transmission']);
+        $body_type = $conn->real_escape_string($_POST['body_type']);
+        $fuel_type = $conn->real_escape_string($_POST['fuel_type']);
+        $is_featured = isset($_POST['is_featured']) ? 1 : 0;
         
         // Handle image upload
         $image = '';
@@ -39,8 +44,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             }
         }
 
-        $sql = "INSERT INTO cars (brand, model, year, millage, price, status, description, image) 
-                VALUES ('$brand', '$model', $year, $millage, $price, '$status', '$description', '$image')";
+        $sql = "INSERT INTO cars (brand, model, year, millage, price, status, description, image, vehicle_condition, transmission, body_type, fuel_type, is_featured) 
+                VALUES ('$brand', '$model', $year, $millage, $price, '$status', '$description', '$image', '$vehicle_condition', '$transmission', '$body_type', '$fuel_type', $is_featured)";
         
         if($conn->query($sql)) {
             echo json_encode(['success' => true, 'message' => 'Vehicle added successfully']);
@@ -59,6 +64,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $price = floatval($_POST['price']);
         $status = $conn->real_escape_string($_POST['status']);
         $description = $conn->real_escape_string($_POST['description']);
+        $vehicle_condition = $conn->real_escape_string($_POST['vehicle_condition']);
+        $transmission = $conn->real_escape_string($_POST['transmission']);
+        $body_type = $conn->real_escape_string($_POST['body_type']);
+        $fuel_type = $conn->real_escape_string($_POST['fuel_type']);
+        $is_featured = isset($_POST['is_featured']) ? 1 : 0;
         
         // Get existing image
         $existing = $conn->query("SELECT image FROM cars WHERE id=$id")->fetch_assoc();
@@ -83,7 +93,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         }
 
         $sql = "UPDATE cars SET brand='$brand', model='$model', year=$year, millage=$millage, price=$price, 
-                status='$status', description='$description', image='$image' WHERE id=$id";
+                status='$status', description='$description', image='$image', vehicle_condition='$vehicle_condition', 
+                transmission='$transmission', body_type='$body_type', fuel_type='$fuel_type', is_featured=$is_featured WHERE id=$id";
         
         if($conn->query($sql)) {
             echo json_encode(['success' => true, 'message' => 'Vehicle updated successfully']);
@@ -728,11 +739,46 @@ $conn->query("ALTER TABLE cars ADD COLUMN IF NOT EXISTS image VARCHAR(255)");
                     </div>
                     
                     <div class="form-group">
+                        <label>Condition *</label>
+                        <select class="form-control" id="vehicle_condition" name="vehicle_condition" required>
+                            <option value="New">New</option>
+                            <option value="Used">Used</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Transmission *</label>
+                        <select class="form-control" id="transmission" name="transmission" required>
+                            <option value="Automatic">Automatic</option>
+                            <option value="Manual">Manual</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Body Type *</label>
+                        <select class="form-control" id="body_type" name="body_type" required>
+                            <option value="Sedan">Sedan</option>
+                            <option value="SUV">SUV</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Fuel Type *</label>
+                        <select class="form-control" id="fuel_type" name="fuel_type" required>
+                            <option value="Petrol">Petrol</option>
+                            <option value="Diesel">Diesel</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
                         <label>Status *</label>
                         <select class="form-control" id="status" name="status" required>
-                            <option value="Available">Available</option>
+                            <option value="In Stock">In Stock</option>
                             <option value="Sold">Sold</option>
-                            <option value="Reserved">Reserved</option>
                         </select>
                     </div>
 
@@ -744,6 +790,13 @@ $conn->query("ALTER TABLE cars ADD COLUMN IF NOT EXISTS image VARCHAR(255)");
                     <div class="form-group">
                         <label>Description</label>
                         <textarea class="form-control" id="description" name="description"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="is_featured" name="is_featured" style="width: auto;">
+                            <span>Feature on Homepage</span>
+                        </label>
                     </div>
                     
                     <div class="form-group">
@@ -817,8 +870,13 @@ $conn->query("ALTER TABLE cars ADD COLUMN IF NOT EXISTS image VARCHAR(255)");
                     document.getElementById('year').value = data.year;
                     document.getElementById('millage').value = data.millage;
                     document.getElementById('price').value = data.price;
+                    document.getElementById('vehicle_condition').value = data.vehicle_condition || 'New';
+                    document.getElementById('transmission').value = data.transmission || 'Automatic';
+                    document.getElementById('body_type').value = data.body_type || 'Sedan';
+                    document.getElementById('fuel_type').value = data.fuel_type || 'Petrol';
                     document.getElementById('status').value = data.status;
                     document.getElementById('description').value = data.description || '';
+                    document.getElementById('is_featured').checked = data.is_featured == 1;
                     
                     // Show current image
                     const currentImageDiv = document.getElementById('currentImageDiv');
